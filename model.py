@@ -1,10 +1,16 @@
 import joblib
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 model = joblib.load(open("model_14.sav", 'rb'))
 feature = joblib.load(open("feature.pkl", 'rb'))
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+)
 
 label = {
     0:  "Admiration/Pride",
