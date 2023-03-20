@@ -1,5 +1,5 @@
 import joblib
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 model = joblib.load(open("model_14.sav", 'rb'))
@@ -10,6 +10,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
+    allow_methods=["POST"],
 )
 
 label = {
@@ -30,10 +31,10 @@ label = {
 }
 
 @app.post("/req")
-async def login(data: str):
-    results = model.predict(feature.transform([data.lower()]))
+async def login(request: Request):
+    data = await request.body()
+    results = model.predict(feature.transform([data.decode().lower()]))
     return {"predictions": f"{label[results[0]]}"}
-    return data
 
 
 
